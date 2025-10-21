@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Mezat Sistemi",
+  "version": "1.0.0",
+  "description": "YouTube canlı yayın chatinden mezat kazananlarını otomatik belirler ve yönetir.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "action": {
+    "default_title": "Live Chat Helper",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/live_chat*",
+        "https://www.youtube.com/live_chat_replay*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "css": [
+        "contentStyles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "template.xlsx"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

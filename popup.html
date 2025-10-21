@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Live Chat Helper</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h3>YouTube Mezat Sistemi</h3>
+
+    <!-- İlk açılış: Sadece başlat butonu -->
+    <div id="initialView" class="initial-view">
+      <button id="start" class="btn-primary">Chat Taramasını Başlat</button>
+      <small>Chat taramasını başlatarak mezat kontrolünü aktif edin</small>
+    </div>
+
+    <!-- Tarama başladıktan sonra: Tüm kontroller -->
+    <div id="controlsView" class="controls-view hidden">
+      <button id="stop" class="btn-secondary">Taramayı Durdur</button>
+
+      <div class="divider"></div>
+
+      <div class="form-group">
+        <label>Ürün ID</label>
+        <input type="text" id="productId" placeholder="SKU-12345" />
+      </div>
+
+      <div class="form-group inline">
+        <div>
+          <label>Mezat Fiyatı</label>
+          <input id="price" type="number" placeholder="250" />
+        </div>
+        <div>
+          <label>Kazanan Sayısı</label>
+          <input id="quantity" type="number" placeholder="10" />
+        </div>
+      </div>
+
+      <div class="auction-buttons">
+        <button id="startAuction" class="btn-auction-start">Mezat Başlat</button>
+        <button id="stopAuction" class="btn-auction-stop">Mezat Durdur</button>
+      </div>
+
+      <div id="auctionList" class="auction-list">
+        <h4>Mezat Katılımcıları (Canlı)</h4>
+        <div id="participantsList" class="participants-list">
+          <small class="empty-state">Mezat başlatıldığında katılımcılar burada görünecek...</small>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <details class="csv-settings">
+        <summary>Kayıtlı Kullanıcı Yönetimi</summary>
+        <div class="csv-buttons">
+          <button id="exportRegistered">CSV İndir</button>
+          <button id="loadRegistered">CSV Yükle</button>
+          <!-- <button id="clearRegistered">Temizle</button> -->
+        </div>
+      </details>
+
+      <div class="status" id="status"></div>
+
+      <small>Mezat Başlat'a basın, o anda fiyatı yazan ilk N kişi kazanır. Kayıtlı olanlar yeşil, kayıtsızlar kırmızı görünür.</small>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
