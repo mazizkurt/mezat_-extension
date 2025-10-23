@@ -100,7 +100,7 @@ function handleUsernameClick(username, badgeEl, authorEl, messageEl) {
 
     // Update badge
     badgeEl.className = "yt-chat-helper-badge reg";
-    badgeEl.textContent = "REGISTERED";
+    badgeEl.textContent = "KAYITLI";
 
     // Update colors to green
     authorEl.style.color = "#16a34a";
@@ -375,6 +375,14 @@ function addAuctionParticipant(username, quantity = 1) {
 
   const isRegistered = registeredSet.has(username.toLowerCase());
 
+  // Sadece kayıtlı kullanıcıları ekle
+  if (!isRegistered) {
+    console.log(
+      `[YT Mezat] Kayıtsız kullanıcı reddedildi: ${username}`
+    );
+    return;
+  }
+
   auctionParticipants.push({
     username: username,
     timestamp: Date.now(),
@@ -384,7 +392,7 @@ function addAuctionParticipant(username, quantity = 1) {
   });
 
   console.log(
-    `[YT Mezat] Yeni katılımcı: ${username} (Kayıtlı: ${isRegistered}, Adet: ${quantity})`
+    `[YT Mezat] Yeni katılımcı eklendi: ${username} (Adet: ${quantity})`
   );
 }
 
