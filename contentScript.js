@@ -558,11 +558,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     startAuction(msg.options);
     sendResponse({ ok: true });
   } else if (msg.cmd === "STOP_AUCTION") {
+    console.log('[YT Mezat] STOP_AUCTION command received');
     const winners = stopAuction();
+    console.log('[YT Mezat] stopAuction returned:', winners ? winners.length : 0, 'winners');
 
     // Barkod yazdırmayı buradan yap (content script'te)
     if (winners && winners.length > 0) {
+      console.log('[YT Mezat] Calling printBarcodes with', winners.length, 'winners');
       printBarcodes(winners, options);
+    } else {
+      console.log('[YT Mezat] No winners to print. Winners:', winners);
     }
 
     sendResponse({ ok: true, winners: winners });
