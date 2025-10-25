@@ -207,131 +207,51 @@ if (stopAuctionBtn) {
   });
 }
 
-// Barkod yazdırma - Yeni sekme ile yazdırma (Windows uyumlu)
+// Barkod yazdırma - DIREKT popup içinde iframe ile
 function openBarcodePrintPage(winners, options) {
   const productId = options?.productId || "PRODUCT";
   const price = options?.price || 0;
 
-  // HTML oluştur
-  let html = `
-<!DOCTYPE html>
+  // Basit HTML - sadece barkodlar
+  let html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Barkod Etiketleri - ${productId}</title>
+  <title>Barkodlar</title>
   <style>
-    @page {
-      margin: 0;
-      size: 10cm 6cm;
-    }
+    @page { margin: 0; size: 10cm 6cm; }
     @media print {
       body { margin: 0; }
       .barcode-label { page-break-after: always; }
       .barcode-label:last-child { page-break-after: auto; }
-      .no-print { display: none !important; }
     }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f5f5f5;
-    }
-    .no-print {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: linear-gradient(135deg, #065fd4 0%, #0449a8 100%);
-      color: white;
-      padding: 15px 30px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .no-print:hover {
-      background: linear-gradient(135deg, #0449a8 0%, #033d80 100%);
-    }
-    .info-banner {
-      background: #e3f2fd;
-      border-left: 4px solid #2196f3;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 4px;
-    }
+    body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
     .barcode-label {
-      width: 10cm;
-      height: 6cm;
-      border: 2px solid #000;
-      padding: 15px;
-      margin: 10px;
-      box-sizing: border-box;
-      background: white;
-      color: black;
-      display: inline-block;
-      vertical-align: top;
+      width: 10cm; height: 6cm; border: 2px solid #000;
+      padding: 15px; box-sizing: border-box;
+      background: white; color: black;
     }
     .barcode-label h2 {
-      margin: 0 0 10px 0;
-      font-size: 24px;
-      text-align: center;
-      border-bottom: 2px solid #000;
-      padding-bottom: 10px;
-      color: black;
+      margin: 0 0 10px 0; font-size: 24px; text-align: center;
+      border-bottom: 2px solid #000; padding-bottom: 10px; color: black;
     }
-    .barcode-label .info {
-      font-size: 16px;
-      margin: 8px 0;
-      color: black;
-    }
+    .barcode-label .info { font-size: 16px; margin: 8px 0; color: black; }
     .barcode-label .barcode {
-      text-align: center;
-      margin: 15px 0;
-      font-size: 32px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      font-family: 'Courier New', monospace;
-      color: black;
+      text-align: center; margin: 15px 0; font-size: 32px;
+      font-weight: bold; letter-spacing: 2px;
+      font-family: 'Courier New', monospace; color: black;
     }
     .barcode-label .username {
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-      margin: 10px 0;
-      color: black;
+      font-size: 20px; font-weight: bold;
+      text-align: center; margin: 10px 0; color: black;
     }
     .barcode-label .footer {
-      font-size: 12px;
-      color: black;
-      text-align: center;
-      margin-top: 10px;
-      border-top: 1px solid #000;
-      padding-top: 8px;
+      font-size: 12px; color: black; text-align: center;
+      margin-top: 10px; border-top: 1px solid #000; padding-top: 8px;
     }
   </style>
-  <script>
-    window.onload = function() {
-      // Otomatik yazdırma - 500ms sonra
-      setTimeout(function() {
-        window.print();
-      }, 500);
-    };
-
-    function printLabels() {
-      window.print();
-    }
-  </script>
 </head>
-<body>
-  <button class="no-print" onclick="printLabels()">🖨️ Yazdır (Ctrl+P)</button>
-
-  <div class="info-banner no-print">
-    <strong>📋 ${winners.length} Etiket Hazır</strong><br>
-    Yazdırma penceresi otomatik açılacak. Barkod yazıcınızı seçip "Yazdır" butonuna basın.
-  </div>
-`;
+<body>`;
 
   winners.forEach((w) => {
     const username = w.username || "Kullanıcı";
@@ -347,27 +267,55 @@ function openBarcodePrintPage(winners, options) {
     <div class="info">Fiyat: ${price} TL</div>
     <div class="info">Adet: ${itemNum} / ${qty}</div>
     <div class="footer">${timestamp}</div>
-  </div>
-`;
+  </div>`;
   });
 
-  html += `
-</body>
-</html>
-`;
+  html += `</body></html>`;
 
-  // Yeni sekme aç ve yazdır
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const printWindow = window.open(url, '_blank');
-
-  // Cleanup
-  if (printWindow) {
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-  } else {
-    console.error('[YT Mezat] Pop-up blocker tarafından engellendi!');
-    alert('Pop-up blocker yazdırma penceresini engelledi. Lütfen pop-up izni verin.');
+  // Gizli iframe oluştur
+  let printFrame = document.getElementById('barcode-print-frame');
+  if (printFrame) {
+    printFrame.remove();
   }
+
+  printFrame = document.createElement('iframe');
+  printFrame.id = 'barcode-print-frame';
+  printFrame.style.position = 'fixed';
+  printFrame.style.right = '0';
+  printFrame.style.bottom = '0';
+  printFrame.style.width = '0';
+  printFrame.style.height = '0';
+  printFrame.style.border = 'none';
+  printFrame.style.visibility = 'hidden';
+
+  document.body.appendChild(printFrame);
+
+  const doc = printFrame.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  // 300ms bekle ve yazdır
+  setTimeout(() => {
+    try {
+      printFrame.contentWindow.focus();
+      printFrame.contentWindow.print();
+
+      console.log('[YT Mezat] Print triggered for', winners.length, 'labels');
+
+      // Cleanup after 3 seconds
+      setTimeout(() => {
+        if (printFrame && printFrame.parentNode) {
+          printFrame.parentNode.removeChild(printFrame);
+        }
+      }, 3000);
+    } catch (e) {
+      console.error('[YT Mezat] Print error:', e);
+      if (printFrame && printFrame.parentNode) {
+        printFrame.parentNode.removeChild(printFrame);
+      }
+    }
+  }, 300);
 }
 
 // CSV generator for winners - Her adet için ayrı barkod satırı
