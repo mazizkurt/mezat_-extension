@@ -207,21 +207,21 @@ if (stopAuctionBtn) {
   });
 }
 
-// Barkod yazdırma - DIREKT popup içinde iframe ile
+// Barkod yazdırma - Native Chrome print dialog
 function openBarcodePrintPage(winners, options) {
   const productId = options?.productId || "PRODUCT";
   const price = options?.price || 0;
 
-  // Basit HTML - sadece barkodlar
+  // HTML oluştur
   let html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Barkodlar</title>
+  <title>Barkod Etiketleri</title>
   <style>
     @page { margin: 0; size: 10cm 6cm; }
     @media print {
-      body { margin: 0; }
+      body { margin: 0; padding: 0; }
       .barcode-label { page-break-after: always; }
       .barcode-label:last-child { page-break-after: auto; }
     }
@@ -295,20 +295,20 @@ function openBarcodePrintPage(winners, options) {
   doc.write(html);
   doc.close();
 
-  // 300ms bekle ve yazdır
+  // Native print dialog aç
   setTimeout(() => {
     try {
       printFrame.contentWindow.focus();
       printFrame.contentWindow.print();
 
-      console.log('[YT Mezat] Print triggered for', winners.length, 'labels');
+      console.log('[YT Mezat] Native print dialog açıldı:', winners.length, 'etiket');
 
-      // Cleanup after 3 seconds
+      // Cleanup - dialog kapandıktan sonra
       setTimeout(() => {
         if (printFrame && printFrame.parentNode) {
           printFrame.parentNode.removeChild(printFrame);
         }
-      }, 3000);
+      }, 2000);
     } catch (e) {
       console.error('[YT Mezat] Print error:', e);
       if (printFrame && printFrame.parentNode) {

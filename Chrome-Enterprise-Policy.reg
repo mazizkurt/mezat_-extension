@@ -1,0 +1,42 @@
+Windows Registry Editor Version 5.00
+
+; ============================================================
+; YouTube Mezat Sistemi - Chrome Enterprise Policy
+; TAM OTOMATİK YAZDIRMA (Dialog YOK!)
+; ============================================================
+; 
+; KULLANIM:
+; 1. Bu dosyayı SAĞ TIK → "Yönetici olarak çalıştır"
+; 2. "Evet" deyin
+; 3. Chrome'u TAMAMEN kapatın
+; 4. OTOMATIK-BASKI.bat ile tekrar açın
+; 5. Mezat Durdur → OTOMATİK BASKI!
+; ============================================================
+
+; Yazdırma izni ver
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"PrintingEnabled"=dword:00000001
+
+; Print Preview'ı TAMAMEN DEVRE DIŞI BIRAK
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"PrintPreviewDisabled"=dword:00000001
+
+; Kiosk Printing AKTIF
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"KioskPrintingEnabled"=dword:00000001
+
+; Varsayılan yazıcıyı otomatik kullan
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"PrintPreviewUseSystemDefaultPrinter"=dword:00000001
+
+; Print header/footer kapat
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"PrintHeaderFooter"=dword:00000000
+
+; Kullanıcı seviyesinde de ayarla (ilave güvenlik)
+[HKEY_CURRENT_USER\Software\Policies\Google\Chrome]
+"PrintingEnabled"=dword:00000001
+"PrintPreviewDisabled"=dword:00000001
+"KioskPrintingEnabled"=dword:00000001
+"PrintPreviewUseSystemDefaultPrinter"=dword:00000001
+"PrintHeaderFooter"=dword:00000000
