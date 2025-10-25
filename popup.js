@@ -188,14 +188,21 @@ if (stopAuctionBtn) {
     stopParticipantsPolling();
 
     // Barkod yazdırma
+    console.log('[YT Mezat Popup] STOP_AUCTION response:', res);
+
     if (res?.winners && res.winners.length > 0) {
+      console.log('[YT Mezat Popup] Winners found:', res.winners.length);
+
       const { options } = await chrome.storage.local.get("options");
+      console.log('[YT Mezat Popup] Options:', options);
 
       // Yazdırma fonksiyonunu çağır
+      console.log('[YT Mezat Popup] Calling openBarcodePrintPage...');
       openBarcodePrintPage(res.winners, options);
 
       if (statusEl) statusEl.textContent = `✅ Mezat tamamlandı! ${res.winners.length} etiket yazdırılıyor...`;
     } else {
+      console.log('[YT Mezat Popup] No winners found');
       if (statusEl) statusEl.textContent = "Mezat durduruldu. Katılımcı bulunamadı.";
     }
 
@@ -209,8 +216,13 @@ if (stopAuctionBtn) {
 
 // Barkod yazdırma - Native Chrome print dialog
 function openBarcodePrintPage(winners, options) {
+  console.log('[YT Mezat Print] Function called with', winners.length, 'winners');
+  console.log('[YT Mezat Print] Options:', options);
+
   const productId = options?.productId || "PRODUCT";
   const price = options?.price || 0;
+
+  console.log('[YT Mezat Print] Product ID:', productId, 'Price:', price);
 
   // HTML oluştur
   let html = `<!DOCTYPE html>
@@ -272,12 +284,16 @@ function openBarcodePrintPage(winners, options) {
 
   html += `</body></html>`;
 
+  console.log('[YT Mezat Print] HTML generated, length:', html.length);
+
   // Gizli iframe oluştur
   let printFrame = document.getElementById('barcode-print-frame');
   if (printFrame) {
+    console.log('[YT Mezat Print] Removing old iframe');
     printFrame.remove();
   }
 
+  console.log('[YT Mezat Print] Creating new iframe');
   printFrame = document.createElement('iframe');
   printFrame.id = 'barcode-print-frame';
   printFrame.style.position = 'fixed';
@@ -289,28 +305,32 @@ function openBarcodePrintPage(winners, options) {
   printFrame.style.visibility = 'hidden';
 
   document.body.appendChild(printFrame);
+  console.log('[YT Mezat Print] Iframe appended to body');
 
   const doc = printFrame.contentWindow.document;
   doc.open();
   doc.write(html);
   doc.close();
+  console.log('[YT Mezat Print] HTML written to iframe');
 
   // Native print dialog aç
   setTimeout(() => {
     try {
+      console.log('[YT Mezat Print] Attempting to print...');
       printFrame.contentWindow.focus();
       printFrame.contentWindow.print();
 
-      console.log('[YT Mezat] Native print dialog açıldı:', winners.length, 'etiket');
+      console.log('[YT Mezat Print] Print dialog should be open now!');
 
       // Cleanup - dialog kapandıktan sonra
       setTimeout(() => {
         if (printFrame && printFrame.parentNode) {
+          console.log('[YT Mezat Print] Cleaning up iframe');
           printFrame.parentNode.removeChild(printFrame);
         }
       }, 2000);
     } catch (e) {
-      console.error('[YT Mezat] Print error:', e);
+      console.error('[YT Mezat Print] ERROR:', e);
       if (printFrame && printFrame.parentNode) {
         printFrame.parentNode.removeChild(printFrame);
       }
