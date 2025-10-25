@@ -187,22 +187,10 @@ if (stopAuctionBtn) {
     const res = await sendToActiveTab("STOP_AUCTION");
     stopParticipantsPolling();
 
-    // Barkod yazdırma
-    console.log('[YT Mezat Popup] STOP_AUCTION response:', res);
-
+    // Status güncelle (yazdırma content script'te yapılıyor)
     if (res?.winners && res.winners.length > 0) {
-      console.log('[YT Mezat Popup] Winners found:', res.winners.length);
-
-      const { options } = await chrome.storage.local.get("options");
-      console.log('[YT Mezat Popup] Options:', options);
-
-      // Yazdırma fonksiyonunu çağır
-      console.log('[YT Mezat Popup] Calling openBarcodePrintPage...');
-      openBarcodePrintPage(res.winners, options);
-
       if (statusEl) statusEl.textContent = `✅ Mezat tamamlandı! ${res.winners.length} etiket yazdırılıyor...`;
     } else {
-      console.log('[YT Mezat Popup] No winners found');
       if (statusEl) statusEl.textContent = "Mezat durduruldu. Katılımcı bulunamadı.";
     }
 
