@@ -388,35 +388,83 @@ function printBarcodes(winners, options) {
   <meta charset="utf-8">
   <title>Barkod Etiketleri</title>
   <style>
-    @page { margin: 0; size: 10cm 6cm; }
-    @media print {
-      body { margin: 0; padding: 0; }
-      .barcode-label { page-break-after: always; }
-      .barcode-label:last-child { page-break-after: auto; }
+    @page {
+      margin: 0;
+      size: 10cm 6cm;
     }
-    body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
+    @media print {
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 10cm;
+        height: 6cm;
+      }
+      .barcode-label {
+        page-break-after: always;
+        page-break-inside: avoid;
+      }
+      .barcode-label:last-child {
+        page-break-after: auto;
+      }
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: white;
+      font-family: Arial, sans-serif;
+    }
     .barcode-label {
-      width: 10cm; height: 6cm; border: 2px solid #000;
-      padding: 15px; box-sizing: border-box;
-      background: white; color: black;
+      width: 10cm;
+      height: 6cm;
+      border: 2px solid #000;
+      padding: 10px;
+      background: white;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .barcode-label h2 {
-      margin: 0 0 10px 0; font-size: 24px; text-align: center;
-      border-bottom: 2px solid #000; padding-bottom: 10px; color: black;
+      margin: 0 0 5px 0;
+      font-size: 22px;
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 5px;
+      color: black;
     }
-    .barcode-label .info { font-size: 16px; margin: 8px 0; color: black; }
+    .barcode-label .info {
+      font-size: 14px;
+      margin: 3px 0;
+      color: black;
+    }
     .barcode-label .barcode {
-      text-align: center; margin: 15px 0; font-size: 32px;
-      font-weight: bold; letter-spacing: 2px;
-      font-family: 'Courier New', monospace; color: black;
+      text-align: center;
+      margin: 8px 0;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+      color: black;
     }
     .barcode-label .username {
-      font-size: 20px; font-weight: bold;
-      text-align: center; margin: 10px 0; color: black;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 5px 0;
+      color: black;
     }
     .barcode-label .footer {
-      font-size: 12px; color: black; text-align: center;
-      margin-top: 10px; border-top: 1px solid #000; padding-top: 8px;
+      font-size: 10px;
+      color: black;
+      text-align: center;
+      margin-top: 5px;
+      border-top: 1px solid #000;
+      padding-top: 3px;
     }
   </style>
 </head>
