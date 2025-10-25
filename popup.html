@@ -31,8 +31,8 @@
           <input id="price" type="number" placeholder="250" />
         </div>
         <div>
-          <label>Kazanan Sayısı</label>
-          <input id="quantity" type="number" placeholder="10" />
+          <label>Kazanan Sayısı (Max)</label>
+          <input id="quantity" type="number" placeholder="10" min="1" />
         </div>
       </div>
 
@@ -61,7 +61,7 @@
 
       <div class="status" id="status"></div>
 
-      <small>Mezat Başlat'a basın, o anda fiyatı yazan ilk N kişi kazanır. Kayıtlı olanlar yeşil, kayıtsızlar kırmızı görünür.</small>
+      <small>Mezat Başlat'a basın, fiyatı yazan ilk N kayıtlı kullanıcı kazanır. Limit dolduğunda yeni katılımcı kabul edilmez.</small>
     </div>
 
     <script src="popup.js"></script>

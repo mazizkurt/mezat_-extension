@@ -41,8 +41,16 @@ function ensurePill() {
   }
 
   if (auctionRunning) {
-    pill.textContent = `🔥 MEZAT AKTİF: ${auctionParticipants.length} katılımcı`;
-    pill.style.background = "rgba(239, 68, 68, 0.9)";
+    const maxParticipants = options?.quantity || 999;
+    const current = auctionParticipants.length;
+    const isFull = current >= maxParticipants;
+
+    pill.textContent = isFull
+      ? `✅ MEZAT TAMAMLANDI: ${current}/${maxParticipants} katılımcı`
+      : `🔥 MEZAT AKTİF: ${current}/${maxParticipants} katılımcı`;
+    pill.style.background = isFull
+      ? "rgba(22, 163, 74, 0.9)"
+      : "rgba(239, 68, 68, 0.9)";
   } else if (running) {
     pill.textContent = "Mezat Sistemi: Tarama aktif";
     pill.style.background = "rgba(0, 0, 0, 0.85)";
@@ -383,6 +391,15 @@ function addAuctionParticipant(username, quantity = 1) {
     return;
   }
 
+  // Maksimum katılımcı sayısını kontrol et
+  const maxParticipants = options?.quantity || 999;
+  if (auctionParticipants.length >= maxParticipants) {
+    console.log(
+      `[YT Mezat] Limit doldu! ${username} kabul edilmedi. (Max: ${maxParticipants})`
+    );
+    return;
+  }
+
   auctionParticipants.push({
     username: username,
     timestamp: Date.now(),
@@ -392,7 +409,7 @@ function addAuctionParticipant(username, quantity = 1) {
   });
 
   console.log(
-    `[YT Mezat] Yeni katılımcı eklendi: ${username} (Adet: ${quantity})`
+    `[YT Mezat] Yeni katılımcı eklendi: ${username} (${auctionParticipants.length}/${maxParticipants}) (Adet: ${quantity})`
   );
 }
 
@@ -400,11 +417,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.cmd === "START") {
     options = msg.options || options;
     running = true;
+    // State'i storage'a kaydet
+    chrome.storage.local.set({ scanningActive: true, scanningOptions: options });
     ensurePill();
     startObserving();
     sendResponse({ ok: true });
   } else if (msg.cmd === "STOP") {
     running = false;
+    // State'i storage'a kaydet
+    chrome.storage.local.set({ scanningActive: false });
     ensurePill();
     stopObserving();
     sendResponse({ ok: true });
@@ -431,4 +452,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     });
   }
 });
-ensurePill();
+
+// Sayfa yüklendiğinde otomatik olarak taramayı başlat
+async function initAutoStart() {
+  await loadLocalRegisteredUsers();
+
+  const data = await chrome.storage.local.get(['scanningActive', 'scanningOptions']);
+  if (data.scanningActive) {
+    console.log('[YT Mezat] Tarama otomatik olarak başlatılıyor...');
+    options = data.scanningOptions || {};
+    running = true;
+    ensurePill();
+    startObserving();
+  } else {
+    ensurePill();
+  }
+}
+
+initAutoStart();
