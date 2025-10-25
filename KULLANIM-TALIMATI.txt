@@ -1,0 +1,46 @@
+================================================================================
+  YOUTUBE MEZAT SİSTEMİ - OTOMATİK BARKOD BASKISI
+================================================================================
+
+Windows PC'de Otomatik Baskı için:
+
+1. OTOMATIK-BASKI.bat dosyasını çift tıklayın
+   → Chrome özel modda açılacak
+
+2. YouTube canlı yayına gidin
+   → Extension ikonuna tıklayın
+   → Chat Taramasını Başlat
+
+3. Mezat yapın
+   → Mezat Başlat
+   → Mezat Durdur
+
+4. ✅ OTOMATIK BASKILACAK!
+   → Yeni sekme açılır
+   → Print dialog GÖRÜNMEDENdirekt varsayılan yazıcıya gönderilir
+   → Barkod cihazı otomatik basar
+
+================================================================================
+
+⚠️ ÖNEMLİ NOTLAR:
+
+• Chrome'u OTOMATIK-BASKI.bat ile açmanız gerekiyor
+  (Normal Chrome açarsanız dialog çıkar!)
+
+• Barkod yazıcı Windows'ta VARSAYILAN yazıcı olarak ayarlanmalı
+
+• Extension Developer Mode'da yüklü olmalı
+
+================================================================================
+
+🔧 SORUN GİDERME:
+
+❌ Hala dialog çıkıyorsa:
+   → Chrome'u tamamen kapatın
+   → OTOMATIK-BASKI.bat'ı tekrar çalıştırın
+
+❌ Barkod basılmıyorsa:
+   → Kontrol Paneli → Cihazlar ve Yazıcılar
+   → Barkod yazıcıyı sağ tık → "Varsayılan yazıcı olarak ayarla"
+
+================================================================================
