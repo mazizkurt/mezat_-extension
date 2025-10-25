@@ -187,9 +187,14 @@ if (stopAuctionBtn) {
     const res = await sendToActiveTab("STOP_AUCTION");
     stopParticipantsPolling();
 
-    // Status güncelle
+    // Barkod yazdırma
     if (res?.winners && res.winners.length > 0) {
-      if (statusEl) statusEl.textContent = `✅ Mezat tamamlandı! ${res.winners.length} etiket otomatik yazdırılıyor...`;
+      const { options } = await chrome.storage.local.get("options");
+
+      // Yazdırma fonksiyonunu çağır
+      openBarcodePrintPage(res.winners, options);
+
+      if (statusEl) statusEl.textContent = `✅ Mezat tamamlandı! ${res.winners.length} etiket yazdırılıyor...`;
     } else {
       if (statusEl) statusEl.textContent = "Mezat durduruldu. Katılımcı bulunamadı.";
     }
