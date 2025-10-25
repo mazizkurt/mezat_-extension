@@ -207,7 +207,7 @@ if (stopAuctionBtn) {
   });
 }
 
-// Barkod yazdırma - Print dialog ile hızlı yazdırma
+// Barkod yazdırma - Yeni sekme ile yazdırma (Windows uyumlu)
 function openBarcodePrintPage(winners, options) {
   const productId = options?.productId || "PRODUCT";
   const price = options?.price || 0;
@@ -224,24 +224,54 @@ function openBarcodePrintPage(winners, options) {
       margin: 0;
       size: 10cm 6cm;
     }
+    @media print {
+      body { margin: 0; }
+      .barcode-label { page-break-after: always; }
+      .barcode-label:last-child { page-break-after: auto; }
+      .no-print { display: none !important; }
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: white;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .no-print {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: linear-gradient(135deg, #065fd4 0%, #0449a8 100%);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .no-print:hover {
+      background: linear-gradient(135deg, #0449a8 0%, #033d80 100%);
+    }
+    .info-banner {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
     }
     .barcode-label {
       width: 10cm;
       height: 6cm;
       border: 2px solid #000;
       padding: 15px;
+      margin: 10px;
       box-sizing: border-box;
       background: white;
       color: black;
-      page-break-after: always;
-    }
-    .barcode-label:last-child {
-      page-break-after: auto;
+      display: inline-block;
+      vertical-align: top;
     }
     .barcode-label h2 {
       margin: 0 0 10px 0;
@@ -281,8 +311,26 @@ function openBarcodePrintPage(winners, options) {
       padding-top: 8px;
     }
   </style>
+  <script>
+    window.onload = function() {
+      // Otomatik yazdırma - 500ms sonra
+      setTimeout(function() {
+        window.print();
+      }, 500);
+    };
+
+    function printLabels() {
+      window.print();
+    }
+  </script>
 </head>
 <body>
+  <button class="no-print" onclick="printLabels()">🖨️ Yazdır (Ctrl+P)</button>
+
+  <div class="info-banner no-print">
+    <strong>📋 ${winners.length} Etiket Hazır</strong><br>
+    Yazdırma penceresi otomatik açılacak. Barkod yazıcınızı seçip "Yazdır" butonuna basın.
+  </div>
 `;
 
   winners.forEach((w) => {
@@ -308,41 +356,18 @@ function openBarcodePrintPage(winners, options) {
 </html>
 `;
 
-  // iframe ile print dialog aç
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'absolute';
-  iframe.style.width = '0';
-  iframe.style.height = '0';
-  iframe.style.border = 'none';
-  iframe.style.visibility = 'hidden';
+  // Yeni sekme aç ve yazdır
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const printWindow = window.open(url, '_blank');
 
-  document.body.appendChild(iframe);
-
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
-
-  // Print dialog'u aç
-  iframe.onload = function() {
-    setTimeout(() => {
-      try {
-        iframe.contentWindow.print();
-
-        // Print dialog kapandıktan sonra iframe'i temizle
-        setTimeout(() => {
-          if (document.body.contains(iframe)) {
-            document.body.removeChild(iframe);
-          }
-        }, 1000);
-      } catch (e) {
-        console.error('[YT Mezat] Print error:', e);
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-      }
-    }, 200);
-  };
+  // Cleanup
+  if (printWindow) {
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } else {
+    console.error('[YT Mezat] Pop-up blocker tarafından engellendi!');
+    alert('Pop-up blocker yazdırma penceresini engelledi. Lütfen pop-up izni verin.');
+  }
 }
 
 // CSV generator for winners - Her adet için ayrı barkod satırı
