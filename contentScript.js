@@ -375,6 +375,115 @@ function stopAuction() {
   return barcodeRows;
 }
 
+// Barkod yazdırma - Direkt iframe ile (yeni sekme YOK)
+function printBarcodesDirectly(winners, options) {
+  const productId = options?.productId || "PRODUCT";
+  const price = options?.price || 0;
+
+  let html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Barkod Etiketleri - ${productId}</title>
+  <style>
+    @page { margin: 0; size: 10cm 6cm; }
+    @media print {
+      body { margin: 0; }
+      .barcode-label { page-break-after: always; }
+      .barcode-label:last-child { page-break-after: auto; }
+    }
+    body { margin: 0; padding: 0; background: white; font-family: Arial, sans-serif; }
+    .barcode-label {
+      width: 10cm; height: 6cm; border: 2px solid #000;
+      padding: 15px; box-sizing: border-box;
+      background: white; color: black;
+    }
+    .barcode-label h2 {
+      margin: 0 0 10px 0; font-size: 24px;
+      text-align: center; border-bottom: 2px solid #000;
+      padding-bottom: 10px; color: black;
+    }
+    .barcode-label .info { font-size: 16px; margin: 8px 0; color: black; }
+    .barcode-label .barcode {
+      text-align: center; margin: 15px 0;
+      font-size: 32px; font-weight: bold;
+      letter-spacing: 2px; font-family: 'Courier New', monospace; color: black;
+    }
+    .barcode-label .username {
+      font-size: 20px; font-weight: bold;
+      text-align: center; margin: 10px 0; color: black;
+    }
+    .barcode-label .footer {
+      font-size: 12px; color: black;
+      text-align: center; margin-top: 10px;
+      border-top: 1px solid #000; padding-top: 8px;
+    }
+  </style>
+</head>
+<body>`;
+
+  winners.forEach((w) => {
+    const username = w.username || "Kullanıcı";
+    const itemNum = w.itemNumber || 1;
+    const qty = w.quantity || 1;
+    const timestamp = new Date(w.timestamp).toLocaleString('tr-TR');
+
+    html += `
+  <div class="barcode-label">
+    <h2>${productId}</h2>
+    <div class="username">${username}</div>
+    <div class="barcode">${productId}</div>
+    <div class="info">Fiyat: ${price} TL</div>
+    <div class="info">Adet: ${itemNum} / ${qty}</div>
+    <div class="footer">${timestamp}</div>
+  </div>`;
+  });
+
+  html += `</body></html>`;
+
+  // iframe ile yazdır - YENI SEKME YOK
+  const iframe = document.createElement('iframe');
+  iframe.id = 'mezat-print-frame';
+  iframe.style.position = 'fixed';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = 'none';
+  iframe.style.visibility = 'hidden';
+  iframe.style.zIndex = '-9999';
+
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  // Yazdırma dialogunu aç
+  setTimeout(() => {
+    try {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+
+      console.log('[YT Mezat] Barkod yazdırma başlatıldı:', winners.length, 'etiket');
+
+      // Cleanup - 2 saniye sonra
+      setTimeout(() => {
+        const existingFrame = document.getElementById('mezat-print-frame');
+        if (existingFrame && existingFrame.parentNode) {
+          existingFrame.parentNode.removeChild(existingFrame);
+        }
+      }, 2000);
+    } catch (e) {
+      console.error('[YT Mezat] Print error:', e);
+      // Cleanup on error
+      const existingFrame = document.getElementById('mezat-print-frame');
+      if (existingFrame && existingFrame.parentNode) {
+        existingFrame.parentNode.removeChild(existingFrame);
+      }
+    }
+  }, 300);
+}
+
 function addAuctionParticipant(username, quantity = 1) {
   // Check if already added
   if (auctionParticipants.some((p) => p.username === username)) {
@@ -443,6 +552,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     sendResponse({ ok: true });
   } else if (msg.cmd === "STOP_AUCTION") {
     const winners = stopAuction();
+
+    // Otomatik barkod yazdırma - direkt burada yap
+    if (winners && winners.length > 0) {
+      printBarcodesDirectly(winners, options);
+    }
+
     sendResponse({ ok: true, winners: winners });
   } else if (msg.cmd === "GET_AUCTION_PARTICIPANTS") {
     sendResponse({
