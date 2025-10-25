@@ -8,26 +8,38 @@ echo   YouTube Mezat Sistemi
 echo   Otomatik Barkod Baskisi
 echo ========================================
 echo.
-echo Chrome otomatik yazdirma modunda baslatiliyor...
-echo.
 
 REM Chrome'un tam yolu
 set CHROME="C:\Program Files\Google\Chrome\Application\chrome.exe"
 if not exist %CHROME% set CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 
-REM Otomatik yazdırma parametreleri
-start "" %CHROME% --kiosk-printing --disable-print-preview --no-first-run --no-default-browser-check --disable-popup-blocking "https://www.youtube.com"
+echo Chrome otomatik yazdirma modunda baslatiliyor...
+echo.
+
+REM Tüm otomatik yazdırma parametreleri
+start "" %CHROME% ^
+--kiosk-printing ^
+--disable-print-preview ^
+--use-system-default-printer ^
+--no-first-run ^
+--no-default-browser-check ^
+--disable-popup-blocking ^
+--autoprint ^
+"https://www.youtube.com"
 
 echo.
 echo ===========================================
-echo   Chrome otomatik baski moduyla baslatildi
+echo   Chrome SESSIZ YAZDIRMA moduyla baslatildi
 echo ===========================================
 echo.
 echo KULLANIM:
 echo 1. YouTube canli yayina git
-echo 2. Mezat Durdur butonuna tikla
-echo 3. Otomatik olarak varsayilan yaziciya gidecek!
+echo 2. Extension'i kullan
+echo 3. Mezat Durdur tikla
+echo 4. OTOMATIK BASKI YAPILACAK (dialog YOK!)
 echo.
-echo ONEMLI: Barkod yazici VARSAYILAN yazici olmali!
+echo ONEMLI: 
+echo - Barkod yazici VARSAYILAN olmali
+echo - Registry ayarini yaptiniz mi? (AYAR.reg)
 echo.
 pause

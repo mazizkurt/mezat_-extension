@@ -1,0 +1,20 @@
+Windows Registry Editor Version 5.00
+
+; YouTube Mezat Sistemi - Chrome Sessiz Yazdırma Ayarı
+; Bu dosyayı YÖNETICI OLARAK çalıştırın
+
+; Print dialog'u devre dışı bırak
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"PrintPreviewUseSystemDefaultPrinter"=dword:00000001
+"PrintingEnabled"=dword:00000001
+"DefaultPrinterSelection"="kind=local"
+
+; Print preview'ı kapat
+[HKEY_LOCAL_MACHINE\Software\Policies\Google\Chrome]
+"DisablePrintPreview"=dword:00000001
+"PrintPreviewUseSystemDefaultPrinter"=dword:00000001
+
+; Kullanıcı seviyesinde de ayarla
+[HKEY_CURRENT_USER\Software\Policies\Google\Chrome]
+"PrintPreviewUseSystemDefaultPrinter"=dword:00000001
+"DisablePrintPreview"=dword:00000001

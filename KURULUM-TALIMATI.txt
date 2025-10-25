@@ -1,0 +1,127 @@
+================================================================================
+  YOUTUBE MEZAT SİSTEMİ - SESSIZ OTOMATİK BASKI KURULUMU
+================================================================================
+
+⚠️ ÖNEMLİ: Bu adımları SIRASI İLE yapın!
+
+================================================================================
+
+ADIM 1: REGISTRY AYARINI YÖNETİCİ OLARAK YÜKLE
+===============================================
+
+1. "Chrome-Otomatik-Yazdirma-AYAR.reg" dosyasına SAĞ TIKLA
+2. "Yönetici olarak çalıştır" seçin (ZORUNLU!)
+3. "Evet" deyin (UAC onayı)
+4. "Tamam" mesajını bekleyin
+5. Chrome'u TAMAMEN KAPATIN (Task Manager'dan kontrol edin)
+
+Bu ayar Chrome'a şunu söyler:
+→ Print preview gösterme
+→ Varsayılan yazıcıyı otomatik kullan
+→ Hiçbir dialog gösterme
+
+================================================================================
+
+ADIM 2: BARKOD YAZICIYI VARSAYILAN YAPIN
+=========================================
+
+Windows Ayarlar → Bluetooth ve cihazlar → Yazıcılar ve tarayıcılar
+→ Barkod yazıcınızı bulun
+→ Üç nokta (...) → "Varsayılan olarak ayarla"
+
+⚠️ Bu ÇOK ÖNEMLİ! Varsayılan yazıcı olmadan çalışmaz!
+
+================================================================================
+
+ADIM 3: CHROME'U .BAT İLE BAŞLAT
+=================================
+
+1. "OTOMATIK-BASKI.bat" dosyasını ÇİFT TIKLAYIN
+2. Chrome şu parametrelerle açılacak:
+   --kiosk-printing (sessiz yazdırma)
+   --use-system-default-printer (varsayılan yazıcı)
+   --disable-print-preview (dialog kapalı)
+   --autoprint (otomatik yazdır)
+
+⚠️ Chrome'u NORMAL AÇMAYIN! Mutlaka .BAT ile açın!
+
+================================================================================
+
+ADIM 4: TEST EDİN
+=================
+
+1. YouTube canlı yayına gidin
+2. Extension popup'ı açın
+3. "Chat Taramasını Başlat"
+4. "Mezat Başlat" → "Mezat Durdur"
+
+✅ Yeni sekme açılacak
+✅ 0.5 saniye içinde OTOMATIK olarak barkod yazıcıya gidecek
+✅ HİÇBİR DIALOG GÖRMEDEN baskı başlayacak!
+
+================================================================================
+
+🔧 SORUN GİDERME
+================================================================================
+
+❌ "Hala print dialog çıkıyor"
+---------------------------------
+1. Registry dosyasını YÖNETİCİ olarak çalıştırdınız mı?
+2. Chrome'u TAMAMEN kapattınız mı? (Task Manager'da kontrol edin)
+3. .BAT dosyası ile mi başlattınız?
+
+Çözüm:
+- Tüm Chrome işlemlerini sonlandırın
+- Bilgisayarı yeniden başlatın
+- Registry'yi yeniden yükleyin (YÖNETİCİ olarak)
+- .BAT ile Chrome'u tekrar açın
+
+❌ "Yanlış yazıcıya gidiyor"
+----------------------------
+→ Barkod yazıcı "Varsayılan yazıcı" olmalı
+→ Windows Ayarlar'dan kontrol edin
+
+❌ "Hiçbir şey olmuyor"
+-----------------------
+→ Extension Developer Mode aktif mi?
+→ Extension yüklü mü?
+→ Console'da (F12) hata var mı?
+
+================================================================================
+
+📋 KONTROl LİSTESİ
+================================================================================
+
+☑ Registry dosyası YÖNETİCİ olarak çalıştırıldı
+☑ Chrome TAMAMEN kapatıldı
+☑ Barkod yazıcı VARSAYILAN olarak ayarlandı
+☑ OTOMATIK-BASKI.bat ile Chrome başlatıldı
+☑ Extension Developer Mode'da yüklü
+
+================================================================================
+
+💡 TEKNİK BİLGİ
+================================================================================
+
+Chrome Parametreleri:
+- --kiosk-printing: Print dialog olmadan yazdır
+- --use-system-default-printer: Windows varsayılan yazıcıyı kullan
+- --disable-print-preview: Preview penceresi gösterme
+- --autoprint: window.print() çağrılarını otomatik işle
+
+Registry Ayarları:
+- DisablePrintPreview: Print preview'ı devre dışı bırak
+- PrintPreviewUseSystemDefaultPrinter: Varsayılan yazıcıyı kullan
+
+================================================================================
+
+✅ BAŞARILI KURULUM
+================================================================================
+
+Eğer tüm adımları doğru yaptıysanız:
+→ Mezat Durdur butonuna bastığınızda
+→ Yeni sekme açılır (0.5 saniye içinde)
+→ Hiçbir dialog görmeden
+→ Barkodlar otomatik yazıcıya gider!
+
+================================================================================
