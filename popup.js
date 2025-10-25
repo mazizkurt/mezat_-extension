@@ -191,12 +191,10 @@ if (stopAuctionBtn) {
     if (res?.winners && res.winners.length > 0) {
       const { options } = await chrome.storage.local.get("options");
 
-      if (statusEl) statusEl.textContent = `Mezat tamamlandı! ${res.winners.length} etiket yazıcıya gönderiliyor...`;
+      // Print dialog aç
+      openBarcodePrintPage(res.winners, options);
 
-      // Sessiz yazdırma - direkt yazıcıya gönder
-      await openBarcodePrintPage(res.winners, options);
-
-      if (statusEl) statusEl.textContent = `✅ Barkodlar yazıcıya gönderildi! (${res.winners.length} etiket)`;
+      if (statusEl) statusEl.textContent = `✅ Mezat tamamlandı! ${res.winners.length} etiket yazdırma ekranında.`;
     } else {
       if (statusEl) statusEl.textContent = "Mezat durduruldu. Katılımcı bulunamadı.";
     }
@@ -209,8 +207,8 @@ if (stopAuctionBtn) {
   });
 }
 
-// Barkod yazdırma - Sessiz yazdırma (hiç dialog yok!)
-async function openBarcodePrintPage(winners, options) {
+// Barkod yazdırma - Print dialog ile hızlı yazdırma
+function openBarcodePrintPage(winners, options) {
   const productId = options?.productId || "PRODUCT";
   const price = options?.price || 0;
 
@@ -310,29 +308,7 @@ async function openBarcodePrintPage(winners, options) {
 </html>
 `;
 
-  // Background'a gönder - Sessiz yazdırma
-  try {
-    const response = await chrome.runtime.sendMessage({
-      cmd: 'SILENT_PRINT',
-      html: html
-    });
-
-    if (response && response.ok) {
-      console.log('[YT Mezat] Barkodlar yazıcıya gönderildi (sessiz)');
-    } else {
-      console.error('[YT Mezat] Yazdırma başarısız:', response?.error);
-      // Fallback: normal print dialog
-      fallbackPrint(html);
-    }
-  } catch (error) {
-    console.error('[YT Mezat] Silent print error:', error);
-    // Fallback: normal print dialog
-    fallbackPrint(html);
-  }
-}
-
-// Fallback: eğer sessiz yazdırma çalışmazsa normal print dialog aç
-function fallbackPrint(html) {
+  // iframe ile print dialog aç
   const iframe = document.createElement('iframe');
   iframe.style.position = 'absolute';
   iframe.style.width = '0';
@@ -347,16 +323,25 @@ function fallbackPrint(html) {
   doc.write(html);
   doc.close();
 
+  // Print dialog'u aç
   iframe.onload = function() {
     setTimeout(() => {
       try {
         iframe.contentWindow.print();
-        setTimeout(() => document.body.removeChild(iframe), 1000);
+
+        // Print dialog kapandıktan sonra iframe'i temizle
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+        }, 1000);
       } catch (e) {
-        console.error('Fallback print error:', e);
-        document.body.removeChild(iframe);
+        console.error('[YT Mezat] Print error:', e);
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
       }
-    }, 300);
+    }, 200);
   };
 }
 
